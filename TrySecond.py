@@ -42,11 +42,18 @@ class Ui_Dialog(Oper):
         self.pushButton_3 = QPushButton(Dialog)
         self.pushButton_3.setObjectName(u"pushButton_3")
         self.pushButton_3.setGeometry(QRect(560, 560, 201, 71))
+        self.pushButton_3.setIconSize(QSize(16, 16))
+
+        self.pushButton_4 = QPushButton(Dialog)
+        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.pushButton_4.setGeometry(QRect(1100, 560, 201, 71))
+        self.pushButton_4.setIconSize(QSize(16, 16))
 
         self.label = QLabel(Dialog)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(40, 30, 552, 471))#20, 30, 563, 200
         self.label.setPixmap(QPixmap(u":/newPrefix/test.qrc"))
+
         self.label_2 = QLabel(Dialog)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setGeometry(QRect(720, 30, 552, 471))
@@ -62,6 +69,7 @@ class Ui_Dialog(Oper):
         self.pushButton_1.setText(QCoreApplication.translate("Dialog", u"Laplas", None))
         self.pushButton_2.setText(QCoreApplication.translate("Dialog", u"Roberts", None))
         self.pushButton_3.setText(QCoreApplication.translate("Dialog", u"Sobel", None))
+        self.pushButton_4.setText(QCoreApplication.translate("Dialog", u"Delete", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"№1", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"№2", None))
     # retranslateUi
@@ -109,10 +117,15 @@ class Ui_Dialog(Oper):
         self.pix = QtGui.QPixmap.fromImage(self.qim)
         self.label_2.setPixmap(QPixmap(self.pix))
 
+    def pushButtonClick4(self):
+        self.label.clear()
+        self.label_2.clear()
+
     def pushButtonClick(self):
         self.pushButton.clicked.connect(self.openFile)
         self.pushButton_1.clicked.connect(self.pushButtonClick1)
         self.pushButton_2.clicked.connect(self.pushButtonClick2)
         self.pushButton_3.clicked.connect(self.pushButtonClick3)
+        self.pushButton_4.clicked.connect(self.pushButtonClick4)
 
 

@@ -17,5 +17,5 @@ Dialog.show()
 #ui.openFile()# Выбор файла
 ui.pushButtonClick()
 #ui.scale_image()
-#print(ui.pushButton.clicked.connect(ui.new_image))
-sys.exit(app.exec_())
+app.exec_()
+#sys.exit(app.exec_())
