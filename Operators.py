@@ -1,4 +1,6 @@
+from PIL import Image
 from PIL.ImageDraw import Draw#ImageDraw #Подключим необходимые библиотеки.
+from PySide2 import QtGui
 import math as mh
 
 class Oper(object):
@@ -59,7 +61,7 @@ class Oper(object):
 
     def mainInOper(self, pict, num):
 
-        self.image = pict#Открываем изображение.
+        self.image = pict#pict#Открываем изображение.
         self.width = self.image.size[0] #Определяем ширину.
         self.height = self.image.size[1] #Определяем высоту.
         self.mask = []#Маска со значениями яркости пикселя
@@ -126,11 +128,28 @@ class Oper(object):
             if (self._hei == self.height):
                 self._hei = 0
 
-        # Перерисовывание изображения новыми пикселями
+        #Перерисовывание изображения новыми пикселями
         for i in range(self.width):
             for j in range(self.height):
                 self.draw.point((i, j), (int(self.picture[i][j]), int(self.picture[i][j]), int(self.picture[i][j])))  # (a, b, c))
         return self.imag
+
+
+        # self.pixel = QtGui.QImage(pict)
+        #
+        # self.painter = QtGui.QPainter()
+        # # Перерисовывание изображения новыми пикселями
+        # # for i in range(self.width):
+        # #     for j in range(self.height):
+        # #         self.painter.setPen(QtGui.QColor(int(self.picture[i][j]), int(self.picture[i][j]), int(self.picture[i][j])))
+        # #         self.painter.drawImage(i, j,self.pix)
+        # # return self.painter
+        # for i in range(self.width):
+        #     for j in range(self.height):
+        #         print(self.picture[i][j])
+        #         self.pixel.setPixel(i,j,0)#int(self.picture[i][j]))
+        # return self.pixel
+
 
 
 

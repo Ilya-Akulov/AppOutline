@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'TrySecond.ui'
-##
-## Created by: Qt User Interface Compiler version 5.15.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
 from PySide2 import QtGui
 from PySide2.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
     QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
@@ -14,6 +5,7 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
+from PySide2.QtWidgets import QFileDialog as qf
 from PIL import Image
 from PIL.ImageQt import ImageQt
 from Operators import Oper
@@ -49,6 +41,11 @@ class Ui_Dialog(Oper):
         self.pushButton_4.setGeometry(QRect(1100, 560, 201, 71))
         self.pushButton_4.setIconSize(QSize(16, 16))
 
+        self.pushButton_5 = QPushButton(Dialog)
+        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.pushButton_5.setGeometry(QRect(1100, 650, 201, 71))
+        self.pushButton_5.setIconSize(QSize(16, 16))
+
         self.label = QLabel(Dialog)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(40, 30, 552, 471))#20, 30, 563, 200
@@ -69,63 +66,94 @@ class Ui_Dialog(Oper):
         self.pushButton_1.setText(QCoreApplication.translate("Dialog", u"Laplas", None))
         self.pushButton_2.setText(QCoreApplication.translate("Dialog", u"Roberts", None))
         self.pushButton_3.setText(QCoreApplication.translate("Dialog", u"Sobel", None))
-        self.pushButton_4.setText(QCoreApplication.translate("Dialog", u"Delete", None))
+        self.pushButton_4.setText(QCoreApplication.translate("Dialog", u"Clear", None))
+        self.pushButton_5.setText(QCoreApplication.translate("Dialog", u"Save", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"№1", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"№2", None))
     # retranslateUi
 
-        # Выбор файла !!!!!!!!!!!!!!!!!!!!! пригодится для картинки
+    # Выбор файла
     def openFile(self):
-        filename = QFileDialog.getOpenFileName()
+        filename = qf.getOpenFileName()
         self.path = filename[0]
-        #print(self.path)
+
+    # Функция  изменения исходной картинки под поле лейбла
+    def scale_image(self):
+        path = self.path
+        self.picture = QPixmap(path)
+        self.original_image = Image.open(path)
+        self.al_image = QtGui.QImage(path)
+        self.width_label, self.height_label = self.label.width(), self.label.height()
+        self.sizePic = (self.width_label, self.height_label)
+        print( self.sizePic)
+        print(self.original_image.size)
+        if (self.original_image.width > self.original_image.height):
+                self.coefScaled = round(self.original_image.width/self.width_label)
+        else: self.coefScaled = round(self.original_image.height/self.height_label)
+        if self.coefScaled == 1: self.coefScaled = 1.5
+        self.widImag,self.heighImag = self.original_image.width/self.coefScaled, self.original_image.height/self.coefScaled
+        self.zed_imaged = self.al_image.scaled(self.widImag,self.heighImag)#делить на целое число во сколько раз картинка больше рамки
+        self.pixx = QPixmap.fromImage(self.zed_imaged)
+        self.label.setPixmap(self.pixx)
+
+    # Нажатие на кнопку открыть файл, в ней происходит открытие файла и загрузка исходной картинки в первое поле
+    def openImageAndPushInLabel(self):
+        self.openFile()
         self.scale_image()
 
-    def scale_image(self):
-        self.picture = QPixmap(self.path)
-
-        self.original_image = Image.open(self.path)
-        self.width_s, self.height_s = self.label.width(), self.label.height()
-        self.sizePic = (self.width_s, self.height_s)
-
-        self.resized_image = self.original_image.resize(self.sizePic)
-        self.qim = ImageQt(self.resized_image)
-        self.pix = QtGui.QPixmap.fromImage(self.qim)
-        self.label.setPixmap(QPixmap(self.pix))
-        # return self.resized_image
-
+    #Нажатие на кнопку оператора Лапласа
     def pushButtonClick1(self):
-        self.pic = self.mainInOper(self.original_image, 1)
-        self.newPic = self.pic.resize(self.sizePic)
+        orig = self.original_image
+        self.pic = self.mainInOper(orig,1)#(self.original_image, 1)
+        self.newPic = self.pic.resize((int(self.widImag), int(self.heighImag)))
         self.qim = ImageQt(self.newPic)
-        self.pix = QtGui.QPixmap.fromImage(self.qim)
-        self.label_2.setPixmap(QPixmap(self.pix))
+        self.pix = QPixmap.fromImage(self.qim)
+        self.label_2.clear()
+        self.label_2.setPixmap(self.pix)
 
+
+    # Нажатие на кнопку оператора Робертса
     def pushButtonClick2(self):
-        self.pic = self.mainInOper(self.original_image, 2)
-        self.newPic = self.pic.resize(self.sizePic)
+        orig = self.original_image
+        self.pic = self.mainInOper(orig, 2)
+        #self.pic = self.mainInOper(self.original_image, 2)
+        self.newPic = self.pic.resize((int(self.widImag), int(self.heighImag)))
         self.qim = ImageQt(self.newPic)
-        #self.qim = ImageQt(self.mainInOper(self.resized_image, 2))
-        self.pix = QtGui.QPixmap.fromImage(self.qim)
-        self.label_2.setPixmap(QPixmap(self.pix))
+        self.pix = QPixmap.fromImage(self.qim)
+        self.label_2.clear()
+        self.label_2.setPixmap(self.pix)
 
+    # Нажатие на кнопку оператора Собеля
     def pushButtonClick3(self):
-        self.pic = self.mainInOper(self.original_image, 3)
-        self.newPic = self.pic.resize(self.sizePic)
+        orig = self.original_image
+        self.pic = self.mainInOper(orig, 3)
+        #self.pic = self.mainInOper(self.original_image, 3)
+        self.newPic = self.pic.resize((int(self.widImag), int(self.heighImag)))
         self.qim = ImageQt(self.newPic)
-        #self.qim = ImageQt(self.mainInOper(self.resized_image, 3))
-        self.pix = QtGui.QPixmap.fromImage(self.qim)
-        self.label_2.setPixmap(QPixmap(self.pix))
+        self.pix = QPixmap.fromImage(self.qim)
+        self.label_2.clear()
+        self.label_2.setPixmap(self.pix)
 
+    # Нажатие на кнопку очистки двух полей картинок
     def pushButtonClick4(self):
         self.label.clear()
         self.label_2.clear()
 
+    # Нажатие на кнопку сохранение картинки с контурами
+    def saveImage(self):
+        fileNameSave = qf.getSaveFileName()
+        self.pathSave = fileNameSave[0]+".jpg"
+        self.pic.save(self.pathSave,"JPEG")
+
+    # Функция объединяющая в себе все функции с кнопками
     def pushButtonClick(self):
-        self.pushButton.clicked.connect(self.openFile)
+        self.pushButton.clicked.connect(self.openImageAndPushInLabel)
         self.pushButton_1.clicked.connect(self.pushButtonClick1)
         self.pushButton_2.clicked.connect(self.pushButtonClick2)
         self.pushButton_3.clicked.connect(self.pushButtonClick3)
         self.pushButton_4.clicked.connect(self.pushButtonClick4)
+        self.pushButton_5.clicked.connect(self.saveImage)
+
+
 
 
